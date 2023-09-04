@@ -5,6 +5,8 @@ export const bookFilterableFields = [
   'categoryId',
   'genre',
   'author',
+  'minPrice',
+  'maxPrice',
 ];
 
 export const bookRelationalFields: string[] = ['categoryId'];
