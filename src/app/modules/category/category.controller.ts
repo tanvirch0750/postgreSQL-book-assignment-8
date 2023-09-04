@@ -10,6 +10,7 @@ import { CategoryServices } from './category.service';
 
 export const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
   const data = req.body;
+
   const result = await CategoryServices.insertIntoDB(data);
 
   sendResponse(res, {

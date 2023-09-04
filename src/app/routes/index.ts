@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import express from 'express';
+import { categoryRoutes } from '../modules/category/category.routes';
 import { authRoutes } from '../modules/user/auth.routes';
 import { userRoutes } from '../modules/user/user.routes';
 const router = express.Router();
@@ -13,6 +14,10 @@ const moduleRoutes = [
   {
     path: '/users',
     route: userRoutes,
+  },
+  {
+    path: '/categories',
+    route: categoryRoutes,
   },
 ];
 
