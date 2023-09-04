@@ -56,8 +56,27 @@ export const getAllFromDB: RequestHandler = catchAsync(
   }
 );
 
+const getDataById: RequestHandler = catchAsync(async (req, res, next) => {
+  const result = await UsersServices.getDataById(req.params.id);
+
+  if (!result) {
+    return next(
+      new ApiError(`No users found with this id`, httpStatus.NOT_FOUND)
+    );
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'User retrived successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   insertIntoDB,
   signinUser,
   getAllFromDB,
+  getDataById,
 };

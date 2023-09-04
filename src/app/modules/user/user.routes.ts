@@ -5,6 +5,7 @@ import { UserController } from './user.contoller';
 
 const router = express.Router();
 
+router.get('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.getDataById);
 router.get('/', auth(ENUM_USER_ROLE.ADMIN), UserController.getAllFromDB);
 
 export const userRoutes = router;
