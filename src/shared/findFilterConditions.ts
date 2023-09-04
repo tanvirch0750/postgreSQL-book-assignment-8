@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const findFilterConditions = (
   searchTerm: string | undefined,
-  filtersData: object,
+  filtersData: Record<string, any>,
   searchableFields: string[],
   relationalFields: string[],
   relationalFieldsMapper: { [key: string]: string }
@@ -25,13 +25,25 @@ export const findFilterConditions = (
         if (relationalFields.includes(key)) {
           return {
             [relationalFieldsMapper[key]]: {
-              id: (filtersData as any)[key],
+              id: filtersData[key],
+            },
+          };
+        } else if (key === 'minPrice') {
+          return {
+            price: {
+              gte: filtersData[key],
+            },
+          };
+        } else if (key === 'maxPrice') {
+          return {
+            price: {
+              lte: filtersData[key],
             },
           };
         } else {
           return {
             [key]: {
-              equals: (filtersData as any)[key],
+              equals: filtersData[key],
             },
           };
         }
@@ -55,16 +67,6 @@ export const findFilterConditionsWithoutRelation = (
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filtersData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filtersData).map(key => ({
-        [key]: {
-          equals: (filtersData as any)[key],
         },
       })),
     });
