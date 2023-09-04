@@ -1,8 +1,12 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
+import { paginationFields } from '../../../constants/paginationFields';
+import ApiError from '../../../errors/ApiError';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import sendResponseToken from '../../../shared/sendResponseToken';
+import { userFilterableFields } from './user.constant';
 import { UsersServices } from './user.service';
 
 export const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
@@ -30,7 +34,30 @@ const signinUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+export const getAllFromDB: RequestHandler = catchAsync(
+  async (req, res, next) => {
+    const filters = pick(req.query, userFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
+
+    const result = await UsersServices.getAllFromDB(filters, paginationOptions);
+
+    if (result.data.length === 0) {
+      return next(new ApiError('No users found!', httpStatus.NOT_FOUND));
+    }
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      status: 'success',
+      message: 'Users retrived successfully',
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
+
 export const UserController = {
   insertIntoDB,
   signinUser,
+  getAllFromDB,
 };
