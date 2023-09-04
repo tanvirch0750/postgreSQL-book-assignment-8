@@ -134,15 +134,38 @@ const getDataById = async (id: string): Promise<Users | null> => {
 const updateDataById = async (
   id: string,
   payload: Partial<Users>
-): Promise<Users> => {
+): Promise<IUserData> => {
+  const existingUser = await prisma.users.findUnique({
+    where: { id: id },
+  });
+
+  if (!existingUser) {
+    throw new ApiError('User does not exist', httpStatus.NOT_FOUND);
+  }
+
   const result = await prisma.users.update({
     where: {
       id,
     },
-    data: payload,
+    data: {
+      ...payload,
+      password: payload.password
+        ? await bcrypt.hash(payload.password, Number(config.bcrypt_salt_rounds))
+        : undefined,
+    },
   });
 
-  return result;
+  const newResultData = {
+    id: result.id,
+    name: result.name,
+    email: result.email,
+    role: result.role,
+    contactNo: result.contactNo,
+    address: result.address,
+    profileImg: result.profileImg,
+  };
+
+  return newResultData;
 };
 
 const deleteDataById = async (id: string): Promise<Users> => {

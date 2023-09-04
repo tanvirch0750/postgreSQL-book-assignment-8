@@ -74,9 +74,43 @@ const getDataById: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateDataById: RequestHandler = catchAsync(async (req, res) => {
+  const payload = req.body;
+
+  const result = await UsersServices.updateDataById(req.params.id, payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'User updated successfully',
+    data: result,
+  });
+});
+
+const deleteDataById: RequestHandler = catchAsync(async (req, res, next) => {
+  const result = await UsersServices.deleteDataById(req.params.id);
+
+  if (!result) {
+    return next(
+      new ApiError(`No user found with this id`, httpStatus.NOT_FOUND)
+    );
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'User deleted successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   insertIntoDB,
   signinUser,
   getAllFromDB,
   getDataById,
+  updateDataById,
+  deleteDataById,
 };
