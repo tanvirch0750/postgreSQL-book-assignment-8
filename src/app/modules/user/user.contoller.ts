@@ -1,7 +1,9 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
+import config from '../../../config';
 import { paginationFields } from '../../../constants/paginationFields';
 import ApiError from '../../../errors/ApiError';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
@@ -106,6 +108,25 @@ const deleteDataById: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
+const getProfileData: RequestHandler = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+
+  const verifiedUser = jwtHelpers.verifyToken(
+    token as string,
+    config.jwt.secret as string
+  );
+
+  const result = await UsersServices.getProfileData(verifiedUser);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'Profile retrived successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   insertIntoDB,
   signinUser,
@@ -113,4 +134,5 @@ export const UserController = {
   getDataById,
   updateDataById,
   deleteDataById,
+  getProfileData,
 };

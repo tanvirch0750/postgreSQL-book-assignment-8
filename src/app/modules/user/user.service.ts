@@ -1,7 +1,7 @@
 import { Prisma, Users } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
-import { Secret } from 'jsonwebtoken';
+import { JwtPayload, Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
@@ -178,6 +178,20 @@ const deleteDataById = async (id: string): Promise<Users> => {
   return result;
 };
 
+const getProfileData = async (
+  verifiedUser: JwtPayload
+): Promise<Users | null> => {
+  const user = await prisma.users.findUnique({
+    where: { id: verifiedUser.userId },
+  });
+
+  if (!user) {
+    throw new ApiError('No user found with this id', httpStatus.UNAUTHORIZED);
+  }
+
+  return user;
+};
+
 export const UsersServices = {
   insertIntoDB,
   loginUser,
@@ -185,4 +199,5 @@ export const UsersServices = {
   getDataById,
   updateDataById,
   deleteDataById,
+  getProfileData,
 };

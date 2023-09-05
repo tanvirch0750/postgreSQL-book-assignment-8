@@ -4,6 +4,7 @@ import { bookRoutes } from '../modules/book/book.routes';
 import { categoryRoutes } from '../modules/category/category.routes';
 import { orderRoutes } from '../modules/order/order.routes';
 import { authRoutes } from '../modules/user/auth.routes';
+import { profileRoutes } from '../modules/user/profile.routes';
 import { userRoutes } from '../modules/user/user.routes';
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/orders',
     route: orderRoutes,
+  },
+  {
+    path: '/profile',
+    route: profileRoutes,
   },
 ];
 

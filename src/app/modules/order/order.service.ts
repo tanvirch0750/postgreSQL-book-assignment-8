@@ -14,9 +14,6 @@ const insertIntoDB = async (data: Order, userId: string): Promise<Order> => {
       userId,
       orderedBooks: orderedBooks as Prisma.InputJsonValue,
     },
-    include: {
-      user: true,
-    },
   });
 
   return result;
@@ -40,9 +37,6 @@ const getAllFromDB = async (
   }
 
   const result = await prisma.order.findMany({
-    include: {
-      user: true,
-    },
     where: whereCondition,
     skip,
     take: size,
@@ -70,16 +64,10 @@ const getDataById = async (
   if (verifiedUser.role === 'admin') {
     result = await prisma.order.findUnique({
       where: { id },
-      include: {
-        user: true,
-      },
     });
   } else if (verifiedUser.role === 'customer') {
     result = await prisma.order.findUnique({
       where: { id, userId: verifiedUser.userId },
-      include: {
-        user: true,
-      },
     });
   }
 
@@ -95,9 +83,6 @@ const updateDataById = async (
       id,
     },
     data: payload,
-    include: {
-      user: true,
-    },
   });
 
   return result;
