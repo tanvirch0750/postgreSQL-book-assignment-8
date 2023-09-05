@@ -15,6 +15,12 @@ enum Role {
   customer
 }
 
+enum Status {
+  pending
+  shipped
+  delivered
+}
+
 model Users {
   id         String @id @default(uuid())
   name       String
@@ -27,6 +33,7 @@ model Users {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
 
   @@map("users")
 }
@@ -38,7 +45,7 @@ model Category {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Book      Book[]
+  books     Book[]
 
   @@map("categories")
 }
@@ -58,4 +65,17 @@ model Book {
   updatedAt DateTime @updatedAt
 
   @@map("books")
+}
+
+// schema.prisma
+model Order {
+  id           String   @id @default(uuid())
+  userId       String
+  user         Users    @relation(fields: [userId], references: [id])
+  orderedBooks Json
+  status       Status   @default(pending)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("orders")
 }
