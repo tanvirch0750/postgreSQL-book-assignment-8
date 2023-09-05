@@ -103,33 +103,9 @@ const updateDataById = async (
   return result;
 };
 
-// const getDataByCategory = async (categoryId: string): Promise<Book[]> => {
-//   const books = await prisma.book.findMany({
-//     include: {
-//       category: true,
-//     },
-//     where: {
-//       category: {
-//         id: categoryId,
-//       },
-//     },
-//   });
-
-//   if (!books || books.length === 0) {
-//     throw new ApiError(
-//       'No books found for the specified category',
-//       httpStatus.NOT_FOUND
-//     );
-//   }
-
-//   return books;
-// };
-
 export const OrderServices = {
   insertIntoDB,
   getAllFromDB,
   getDataById,
   updateDataById,
-  //   deleteDataById,
-  //   getDataByCategory,
 };

@@ -13,6 +13,13 @@ router.get(
   OrderController.getDataById
 );
 
+router.patch(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(OrderValidation.update),
+  OrderController.updateDataById
+);
+
 router.post(
   '/create-order',
   auth(ENUM_USER_ROLE.CUSTOMER),

@@ -85,61 +85,29 @@ const getDataById: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
-// const updateDataById: RequestHandler = catchAsync(async (req, res, next) => {
-//   const payload = req.body;
+const updateDataById: RequestHandler = catchAsync(async (req, res, next) => {
+  const payload = req.body;
 
-//   const result = await BookServices.updateDataById(req.params.id, payload);
+  const result = await OrderServices.updateDataById(req.params.id, payload);
 
-//   if (!result) {
-//     return next(
-//       new ApiError(`No book found with this id`, httpStatus.NOT_FOUND)
-//     );
-//   }
+  if (!result) {
+    return next(
+      new ApiError(`No Order found with this id`, httpStatus.NOT_FOUND)
+    );
+  }
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     status: 'success',
-//     message: 'Book updated successfully',
-//     data: result,
-//   });
-// });
-
-// const deleteDataById: RequestHandler = catchAsync(async (req, res, next) => {
-//   const result = await BookServices.deleteDataById(req.params.id);
-
-//   if (!result) {
-//     return next(
-//       new ApiError(`No book found with this id`, httpStatus.NOT_FOUND)
-//     );
-//   }
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     status: 'success',
-//     message: 'Book deleted successfully',
-//     data: result,
-//   });
-// });
-
-// const getBookByCategory: RequestHandler = catchAsync(async (req, res) => {
-//   const result = await BookServices.getDataByCategory(req.params.categoryId);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     status: 'success',
-//     message: 'Book retrived successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'Order updated successfully',
+    data: result,
+  });
+});
 
 export const OrderController = {
   insertIntoDB,
   getAllFromDB,
   getDataById,
-  //   updateDataById,
-  //   deleteDataById,
-  //   getBookByCategory,
+  updateDataById,
 };
