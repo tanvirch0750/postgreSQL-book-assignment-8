@@ -8,6 +8,7 @@ import { BookValidation } from './book.validation';
 const router = express.Router();
 
 router.get('/:id', BookController.getDataById);
+router.get('/:categoryId/category', BookController.getBookByCategory);
 
 router.delete(
   '/:id',

@@ -99,10 +99,23 @@ const deleteDataById: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
+const getBookByCategory: RequestHandler = catchAsync(async (req, res) => {
+  const result = await BookServices.getDataByCategory(req.params.categoryId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'Book retrived successfully',
+    data: result,
+  });
+});
+
 export const BookController = {
   insertIntoDB,
   getAllFromDB,
   getDataById,
   updateDataById,
   deleteDataById,
+  getBookByCategory,
 };

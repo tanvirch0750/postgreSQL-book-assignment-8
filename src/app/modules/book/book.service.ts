@@ -1,11 +1,17 @@
 import { Book, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { calculatePagination } from '../../../helpers/paginationHelper';
 import { IGenericPaginationResponseSize } from '../../../interfaces/genericPaginationResponse';
 import { IpaginationOptions } from '../../../interfaces/paginationOptions';
-import { findFilterConditionsWithoutRelation } from '../../../shared/findFilterConditions';
+import { findFilterConditions } from '../../../shared/findFilterConditions';
 import { orderByConditions } from '../../../shared/orderCondition';
 import prisma from '../../../shared/prisma';
-import { bookSearchableFields } from './book.constant';
+import {
+  bookRelationalFields,
+  bookRelationalFieldsMapper,
+  bookSearchableFields,
+} from './book.constant';
 import { IBookFilters } from './book.interface';
 
 const insertIntoDB = async (data: Book): Promise<Book> => {
@@ -25,10 +31,12 @@ const getAllFromDB = async (
   const { page, size, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
-  const andConditions = findFilterConditionsWithoutRelation(
+  const andConditions = findFilterConditions(
     searchTerm,
     filterData,
-    bookSearchableFields
+    bookSearchableFields,
+    bookRelationalFields,
+    bookRelationalFieldsMapper
   );
 
   const whereConditons: Prisma.BookWhereInput =
@@ -100,10 +108,33 @@ const deleteDataById = async (id: string): Promise<Book> => {
   return result;
 };
 
+const getDataByCategory = async (categoryId: string): Promise<Book[]> => {
+  const books = await prisma.book.findMany({
+    include: {
+      category: true,
+    },
+    where: {
+      category: {
+        id: categoryId,
+      },
+    },
+  });
+
+  if (!books || books.length === 0) {
+    throw new ApiError(
+      'No books found for the specified category',
+      httpStatus.NOT_FOUND
+    );
+  }
+
+  return books;
+};
+
 export const BookServices = {
   insertIntoDB,
   getAllFromDB,
   getDataById,
   updateDataById,
   deleteDataById,
+  getDataByCategory,
 };
