@@ -61,15 +61,28 @@ const getAllFromDB = async (
   };
 };
 
-const getDataById = async (id: string): Promise<Order | null> => {
-  const result = await prisma.order.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      user: true,
-    },
-  });
+const getDataById = async (
+  id: string,
+  verifiedUser: JwtPayload
+): Promise<Order | null> => {
+  let result: Order | null = null;
+
+  if (verifiedUser.role === 'admin') {
+    result = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        user: true,
+      },
+    });
+  } else if (verifiedUser.role === 'customer') {
+    result = await prisma.order.findUnique({
+      where: { id, userId: verifiedUser.userId },
+      include: {
+        user: true,
+      },
+    });
+  }
+
   return result;
 };
 

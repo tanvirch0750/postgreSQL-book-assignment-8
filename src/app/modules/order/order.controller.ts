@@ -62,23 +62,28 @@ export const getAllFromDB: RequestHandler = catchAsync(
   }
 );
 
-// const getDataById: RequestHandler = catchAsync(async (req, res, next) => {
-//   const result = await BookServices.getDataById(req.params.id);
+const getDataById: RequestHandler = catchAsync(async (req, res, next) => {
+  const token = req.headers.authorization;
 
-//   if (!result) {
-//     return next(
-//       new ApiError(`No book found with this id`, httpStatus.NOT_FOUND)
-//     );
-//   }
+  const verifiedUser = jwtHelpers.verifyToken(
+    token as string,
+    config.jwt.secret as string
+  );
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     status: 'success',
-//     message: 'Book retrived successfully',
-//     data: result,
-//   });
-// });
+  const result = await OrderServices.getDataById(req.params.id, verifiedUser);
+
+  if (!result) {
+    return next(new ApiError(`No order found`, httpStatus.NOT_FOUND));
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    status: 'success',
+    message: 'Order retrived successfully',
+    data: result,
+  });
+});
 
 // const updateDataById: RequestHandler = catchAsync(async (req, res, next) => {
 //   const payload = req.body;
@@ -133,7 +138,7 @@ export const getAllFromDB: RequestHandler = catchAsync(
 export const OrderController = {
   insertIntoDB,
   getAllFromDB,
-  //   getDataById,
+  getDataById,
   //   updateDataById,
   //   deleteDataById,
   //   getBookByCategory,
