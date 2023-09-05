@@ -88,7 +88,7 @@ const loginUser = async (data: ISigninUser): Promise<ISigninUserResponse> => {
 const getAllFromDB = async (
   filters: IUserFilterRequest,
   options: IpaginationOptions
-): Promise<IGenericPaginationResponseSize<Users[]>> => {
+): Promise<IGenericPaginationResponseSize<Partial<Users>[]>> => {
   const { page, size, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
@@ -108,6 +108,15 @@ const getAllFromDB = async (
     skip,
     take: size,
     orderBy: orderCondition,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      contactNo: true,
+      address: true,
+      profileImg: true,
+    },
   });
 
   const total = await prisma.users.count();
@@ -122,10 +131,19 @@ const getAllFromDB = async (
   };
 };
 
-const getDataById = async (id: string): Promise<Users | null> => {
+const getDataById = async (id: string): Promise<Partial<Users> | null> => {
   const result = await prisma.users.findUnique({
     where: {
       id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      contactNo: true,
+      address: true,
+      profileImg: true,
     },
   });
   return result;
@@ -153,25 +171,33 @@ const updateDataById = async (
         ? await bcrypt.hash(payload.password, Number(config.bcrypt_salt_rounds))
         : undefined,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      contactNo: true,
+      address: true,
+      profileImg: true,
+    },
   });
 
-  const newResultData = {
-    id: result.id,
-    name: result.name,
-    email: result.email,
-    role: result.role,
-    contactNo: result.contactNo,
-    address: result.address,
-    profileImg: result.profileImg,
-  };
-
-  return newResultData;
+  return result;
 };
 
-const deleteDataById = async (id: string): Promise<Users> => {
+const deleteDataById = async (id: string): Promise<Partial<Users>> => {
   const result = await prisma.users.delete({
     where: {
       id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      contactNo: true,
+      address: true,
+      profileImg: true,
     },
   });
 
