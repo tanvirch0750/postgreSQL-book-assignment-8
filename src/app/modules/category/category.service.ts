@@ -56,6 +56,9 @@ const getDataById = async (id: string): Promise<Category | null> => {
     where: {
       id,
     },
+    include: {
+      books: true,
+    },
   });
   return result;
 };
