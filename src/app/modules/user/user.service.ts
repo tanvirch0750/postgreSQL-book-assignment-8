@@ -6,7 +6,7 @@ import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { calculatePagination } from '../../../helpers/paginationHelper';
-import { IGenericPaginationResponse } from '../../../interfaces/genericPaginationResponse';
+import { IGenericPaginationResponseSize } from '../../../interfaces/genericPaginationResponse';
 import { IpaginationOptions } from '../../../interfaces/paginationOptions';
 import { findFilterConditionsWithoutRelation } from '../../../shared/findFilterConditions';
 import { orderByConditions } from '../../../shared/orderCondition';
@@ -88,8 +88,8 @@ const loginUser = async (data: ISigninUser): Promise<ISigninUserResponse> => {
 const getAllFromDB = async (
   filters: IUserFilterRequest,
   options: IpaginationOptions
-): Promise<IGenericPaginationResponse<Users[]>> => {
-  const { page, limit, skip } = calculatePagination(options);
+): Promise<IGenericPaginationResponseSize<Users[]>> => {
+  const { page, size, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = findFilterConditionsWithoutRelation(
@@ -106,7 +106,7 @@ const getAllFromDB = async (
   const result = await prisma.users.findMany({
     where: whereConditons,
     skip,
-    take: limit,
+    take: size,
     orderBy: orderCondition,
   });
 
@@ -116,7 +116,7 @@ const getAllFromDB = async (
     meta: {
       total,
       page,
-      limit,
+      size,
     },
     data: result,
   };

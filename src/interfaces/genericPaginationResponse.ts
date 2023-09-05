@@ -6,3 +6,12 @@ export type IGenericPaginationResponse<T> = {
   };
   data: T;
 };
+
+export type IGenericPaginationResponseSize<T> = {
+  meta: {
+    page: number;
+    size: number;
+    total: number;
+  };
+  data: T;
+};

@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import express from 'express';
+import { bookRoutes } from '../modules/book/book.routes';
 import { categoryRoutes } from '../modules/category/category.routes';
 import { authRoutes } from '../modules/user/auth.routes';
 import { userRoutes } from '../modules/user/user.routes';
 const router = express.Router();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const moduleRoutes = [
   {
     path: '/auth',
@@ -18,6 +18,10 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: categoryRoutes,
+  },
+  {
+    path: '/books',
+    route: bookRoutes,
   },
 ];
 

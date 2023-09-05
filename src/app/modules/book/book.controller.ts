@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
-import { paginationFields } from '../../../constants/paginationFields';
+import { paginationFieldsBook } from '../../../constants/paginationFields';
 import ApiError from '../../../errors/ApiError';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
@@ -24,7 +24,7 @@ export const insertIntoDB: RequestHandler = catchAsync(async (req, res) => {
 export const getAllFromDB: RequestHandler = catchAsync(
   async (req, res, next) => {
     const filters = pick(req.query, bookFilterableFields);
-    const paginationOptions = pick(req.query, paginationFields);
+    const paginationOptions = pick(req.query, paginationFieldsBook);
 
     const result = await BookServices.getAllFromDB(filters, paginationOptions);
 

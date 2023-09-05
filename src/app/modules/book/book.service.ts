@@ -1,15 +1,11 @@
 import { Book, Prisma } from '@prisma/client';
 import { calculatePagination } from '../../../helpers/paginationHelper';
-import { IGenericPaginationResponse } from '../../../interfaces/genericPaginationResponse';
+import { IGenericPaginationResponseSize } from '../../../interfaces/genericPaginationResponse';
 import { IpaginationOptions } from '../../../interfaces/paginationOptions';
-import { findFilterConditions } from '../../../shared/findFilterConditions';
+import { findFilterConditionsWithoutRelation } from '../../../shared/findFilterConditions';
 import { orderByConditions } from '../../../shared/orderCondition';
 import prisma from '../../../shared/prisma';
-import {
-  bookRelationalFields,
-  bookRelationalFieldsMapper,
-  bookSearchableFields,
-} from './book.constant';
+import { bookSearchableFields } from './book.constant';
 import { IBookFilters } from './book.interface';
 
 const insertIntoDB = async (data: Book): Promise<Book> => {
@@ -25,16 +21,14 @@ const insertIntoDB = async (data: Book): Promise<Book> => {
 const getAllFromDB = async (
   filters: IBookFilters,
   options: IpaginationOptions
-): Promise<IGenericPaginationResponse<Book[]>> => {
-  const { page, limit, skip } = calculatePagination(options);
+): Promise<IGenericPaginationResponseSize<Book[]>> => {
+  const { page, size, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
-  const andConditions = findFilterConditions(
+  const andConditions = findFilterConditionsWithoutRelation(
     searchTerm,
     filterData,
-    bookSearchableFields,
-    bookRelationalFields,
-    bookRelationalFieldsMapper
+    bookSearchableFields
   );
 
   const whereConditons: Prisma.BookWhereInput =
@@ -48,7 +42,7 @@ const getAllFromDB = async (
     },
     where: whereConditons,
     skip,
-    take: limit,
+    take: size,
     orderBy: orderCondition,
   });
 
@@ -58,7 +52,7 @@ const getAllFromDB = async (
     meta: {
       total,
       page,
-      limit,
+      size,
     },
     data: result,
   };

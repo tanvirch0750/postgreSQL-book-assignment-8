@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Category, Prisma } from '@prisma/client';
 import { calculatePagination } from '../../../helpers/paginationHelper';
-import { IGenericPaginationResponse } from '../../../interfaces/genericPaginationResponse';
+import { IGenericPaginationResponseSize } from '../../../interfaces/genericPaginationResponse';
 import { IpaginationOptions } from '../../../interfaces/paginationOptions';
 import { findFilterConditionsWithoutRelation } from '../../../shared/findFilterConditions';
 import { orderByConditions } from '../../../shared/orderCondition';
@@ -17,8 +17,8 @@ const insertIntoDB = async (data: Category): Promise<Category> => {
 const getAllFromDB = async (
   filters: ICategoryFilterRequest,
   options: IpaginationOptions
-): Promise<IGenericPaginationResponse<Category[]>> => {
-  const { page, limit, skip } = calculatePagination(options);
+): Promise<IGenericPaginationResponseSize<Category[]>> => {
+  const { page, size, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = findFilterConditionsWithoutRelation(
@@ -35,7 +35,7 @@ const getAllFromDB = async (
   const result = await prisma.category.findMany({
     where: whereConditons,
     skip,
-    take: limit,
+    take: size,
     orderBy: orderCondition,
   });
 
@@ -45,7 +45,7 @@ const getAllFromDB = async (
     meta: {
       total,
       page,
-      limit,
+      size,
     },
     data: result,
   };

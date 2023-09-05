@@ -31,13 +31,13 @@ export const findFilterConditions = (
         } else if (key === 'minPrice') {
           return {
             price: {
-              gte: filtersData[key],
+              gte: Number(filtersData[key]),
             },
           };
         } else if (key === 'maxPrice') {
           return {
             price: {
-              lte: filtersData[key],
+              lte: Number(filtersData[key]),
             },
           };
         } else {
